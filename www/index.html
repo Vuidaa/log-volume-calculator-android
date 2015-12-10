@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+    <script src="js/app.js"></script>
+  </head>
+  <body ng-app="starter">
+    <ion-pane ng-controller="calc">
+
+    <!-- Header -->
+    <ion-header-bar class="bar bar-header bar-positive">
+      <h1 class="title">Medienos tūrio skaičiuoklė</h1>
+    </ion-header-bar>
+     <ion-header-bar class="bar bar-subheader">
+        <h1 class="title">{{form.result | rounding}} m<sup>3</sup></h1>
+      </ion-header-bar>
+
+      <ion-content>
+      <!-- Form inputs -->
+      <div class='row'>
+        <div class='col col-100'>
+            <form name="calForm" ng-submit="calculate(form.diameter, form.amount, calForm)" novalidate>
+              <div class="list">
+
+                 <label class="item item-input item-select">
+                  <div class="input-label">Rąsto ilgis:</div>
+                  <select name="length" ng-model="form.length" ng-change="loadKof(form.length)" ng-required="true">
+                    <option ng-repeat="option in lengths" value="{{option.id}}">{{option.title}}</option>
+                  </select>
+                </label>
+
+                <label class="item item-input item-stacked-label">
+                  <span class="input-label">Skersmuo:</span>
+                  <input name="diameter" type="number" min="3" max="70" placeholder="Nuo 3 iki 70 cm"
+                        ng-model="form.diameter"
+                        ng-required="true" 
+                        ng-minlength="1" 
+                        ng-maxlength="2" 
+                        ng-pattern="/^(\d)+$/">
+                </label>
+
+                <label class="item item-input item-stacked-label">
+                  <span class="input-label">Kiekis:</span>
+                  <input name="amount" type="number" min="1"  placeholder="Vienetai" 
+                        ng-model="form.amount"
+                        ng-required="true"
+                        ng-minlength="1"
+                        ng-maxlength="3" 
+                        ng-pattern="/^(\d)+$/">
+                </label>
+                <button name="submit" type="submit" class="button button-block button-outline button-balanced" 
+                        ng-disabled="calForm.$invalid" >
+                        <span class='ion-checkmark'></span> Skaičiuoti
+                </button>
+              </div>
+            </form>
+        </div>
+      </div>
+      <!-- Form Control buttons -->
+      <div class='row'>
+        <div class='col col-50'>
+          <button class="button button-block button-outline button-assertive" ng-click="resetForm(calForm)">
+            <span class='ion-refresh'></span> Išvalyti
+          </button>
+        </div>
+        <div class='col col-50'>
+          <button class="button button-block button-outline button-positive" 
+            ng-click="addToList();resetForm(calForm)"
+            ng-disabled="calForm.$invalid || !calForm.$submitted">
+            <span class='ion-plus'></span> Pridėti į sąrašą
+          </button>
+        </div>
+      </div>
+  
+      <!-- List --> 
+      <div class='row'>
+         <div class="col col-100">
+          <h5><b>Bendras tūris: {{list.total | number:2}} m<sup>3</sup></b></h5>
+          <table class='table'>
+            <thead>
+              <th>Ilgis</th><th>Skersmuo</th><th>Kiekis</th><th>Tūris</th><th>Pašalinti</th>
+            </thead>
+            <tbody>
+              <tr ng-repeat="item in list.items track by $index">
+                <td>{{item.title}}</td><td>{{item.diameter}}</td><td>{{item.amount}}</td><td><b>{{item.result | rounding }} m<sup>3</sup></b></td>
+                <td><button class="button button-small button-assertive" ng-click="removeListItem($index)">
+                    <i class="icon ion-close"></i>
+                  </button></td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="button button-block button-block button-outline button-assertive" ng-click="resetList()">
+            <span class='ion-refresh'></span> Išvalyti sąrašą
+          </button>
+        </div>
+      </div>
+      <!-- List -->
+      </ion-content>
+    </ion-pane>
+  </body>
+</html>
+<!-- <preference name="SplashScreen" value="none"/> -->
